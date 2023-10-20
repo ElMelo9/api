@@ -1,11 +1,18 @@
 from flask import Flask
 import logging
+from src.log.logs import Logs
 from src.routes.getRoutes import get_routes
 from src.routes.postRoutes import post_routes
 
+logs = Logs()
+
 app = Flask(__name__)
-# Configura la ubicación de los registros en la carpeta "log"
-logging.basicConfig(filename='src/log/app.log', level=logging.DEBUG)
+
+# Configura el logger de la aplicación para escribir en el archivo de registro
+app.logger.addHandler(logs.get_file_handler())
+
+# Configura el nivel de registro del logger de la aplicación
+app.logger.setLevel(logging.DEBUG)
 
 # Registra las rutas GET
 app.register_blueprint(get_routes)
@@ -14,4 +21,4 @@ app.register_blueprint(get_routes)
 app.register_blueprint(post_routes)
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=4000, debug=True)
+    app.run(port=4000, debug=True)
