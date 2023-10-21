@@ -2,6 +2,8 @@ import datetime
 from database.crud_operations import Crud
 from services.authLogin import AuthUser
 from services.authToken import verificar_token
+from services.summary import SummaryText
+from services.traslate import Translate
 from flask import Blueprint, request, jsonify
 import jwt
 import os
@@ -80,6 +82,7 @@ def crear_document():
 
 # Ruta para crear un usuario
 @post_routes.route('/crear_usuario', methods=['POST'])
+#@verificar_token
 def crear_usuario():
     data = request.get_json()
     if not data:
@@ -158,3 +161,22 @@ def crear_contactenos():
     if isinstance(result, Exception):
         return jsonify({"error": str(result)}), 500
     return jsonify({" message": f" contactenos creado correctamente"}), 201
+
+# Ruta para resumir y traducir
+@post_routes.route('/resumirTraducir', methods=['POST'])
+def resumirTraducirs():
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "Datos del usuario no proporcionados"}), 400
+    # validar datos
+
+    text = data.get("text")
+    if not text :
+        return jsonify({"error": "falta texto para resumir y traducir"}), 400
+    resumir = SummaryText()
+    result = resumir.generate_summary(text,3)
+    traducir = Translate()
+    result2 = traducir.translador(result)
+    if isinstance(result, Exception):
+        return jsonify({"error": str(result)}), 500
+    return jsonify({" resumen": result,"traducido":result2}), 201

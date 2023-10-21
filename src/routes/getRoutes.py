@@ -33,7 +33,7 @@ def obtener_tipoDoc():
 
 # Ruta para obtener todos los usuarios
 @get_routes.route('/obtener_usuarios', methods=['GET'])
-@verificar_token
+#@verificar_token
 def obtener_users():
     # Realiza una consulta para obtener todos los roles
     response = crud.get_users()
